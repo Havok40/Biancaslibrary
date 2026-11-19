@@ -1,7 +1,7 @@
 # Keeps the library's free account service awake.
 #
 # A free Supabase project is paused after about a week with no database activity. If nobody opens
-# the library for a week (a holiday), this asks it one small question twice a week so it never
+# the library for a week (a holiday), this asks it one small question every third day so it never
 # gets that far. The address and key below are the same public ones built into the page itself.
 #
 # This file is written by tools/publish.mjs from tools/keepalive.yml. Change it there, not here.
@@ -9,7 +9,12 @@ name: Keep the library's account awake
 
 on:
   schedule:
-    - cron: '17 5 * * 1,4' # Mondays and Thursdays, 05:17 UTC
+    # Every third day of the month (the 1st, 4th, 7th … 28th, 31st), twice on that day.
+    # GitHub may start a scheduled run late, or drop it when it is busy: the very first one, on
+    # 19 Nov 2026, never came. So the afternoon start is the spare for the morning one, and one
+    # missed day still leaves the account asked within six days. A second run is harmless.
+    - cron: '17 5 */3 * *' # 05:17 UTC, 07:17 in South Africa
+    - cron: '43 14 */3 * *' # 14:43 UTC, 16:43 in South Africa
   workflow_dispatch:
 
 permissions:
